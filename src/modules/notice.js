@@ -83,7 +83,28 @@ const TYPES = {
 };
 
 function edit({ attributes, setAttributes }) {
-	const { content, type } = attributes;
+	const { content, type, isExample } = attributes;
+
+	if(isExample){
+		return (
+			[<img
+				src="https://docs.fuukei.org/short-code/noway.png"
+				alt="预览"
+				style={{ width: "100%", height: "auto", display: "block" }}
+			/>,
+			<img
+				src="https://docs.fuukei.org/short-code/buy.png"
+				alt="预览"
+				style={{ width: "100%", height: "auto", display: "block" }}
+			/>,
+			<img
+				src="https://docs.fuukei.org/short-code/warn.png"
+				alt="预览"
+				style={{ width: "100%", height: "auto", display: "block" }}
+			/>]
+		);
+	}
+
 	const blockProps = useBlockProps();
 	const typeInfo = TYPES[type];
 
@@ -133,6 +154,10 @@ export default function noticeBlock() {
 				type: 'string',
 				default: 'task',
 			},
+			isExample: {
+                type: "boolean",
+                default: false,
+            }
 		},
 		edit,
 		save({ attributes }) {
@@ -145,5 +170,10 @@ export default function noticeBlock() {
 				</div>
 			);
 		},
+		example: {
+            attributes: {
+                isExample: true,
+            },
+        },
 	});
 }

@@ -77,7 +77,18 @@ const DEFAULT_COLOR = '#ffffff';
 const DEFAULT_TITLE = lang.titlePlaceholder;
 
 function edit({ attributes, setAttributes }) {
-	const { icon, title, img, color, link } = attributes;
+	const { icon, title, img, color, link, isExample } = attributes;
+
+	if(isExample){
+		return (
+			<img
+				src="https://docs.fuukei.org/short-code/showc.png"
+				alt="预览"
+				style={{ width: "100%", height: "auto", display: "block" }}
+			/>
+		);
+	}
+
 	const blockProps = useBlockProps();
 
 	const onSelectImage = (media) => {
@@ -187,6 +198,10 @@ export default function showcardBlock() {
 				type: 'string',
 				default: '',
 			},
+			isExample: {
+                type: "boolean",
+                default: false,
+            }
 		},
 		edit,
 		save({ attributes }) {
@@ -217,5 +232,10 @@ export default function showcardBlock() {
 				</div>
 			);
 		},
+		example: {
+            attributes: {
+                isExample: true,
+            },
+        },
 	});
 }

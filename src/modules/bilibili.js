@@ -45,69 +45,81 @@ switch ((iroBlockEditor.language || window.navigator.language || "zh-CN").replac
 
 export default function bilibiliBlock(){
     function edit({ attributes, setAttributes }){
-        const { videoId } = attributes;
-            const blockProps = useBlockProps();
-    
-            let iframe = null;
-            const trimmed = (videoId || "").trim();
-    
-            if (/^av\d+$/i.test(trimmed)) {
-                const avid = trimmed.replace(/^av/i, "");
-                iframe = `https://player.bilibili.com/player.html?avid=${avid}&page=1&autoplay=0&danmaku=0`;
-            } else if (/^BV[a-zA-Z0-9]+$/.test(trimmed)) {
-                const bvid = trimmed;
-                iframe = `https://player.bilibili.com/player.html?bvid=${bvid}&page=1&autoplay=0&danmaku=0`;
-            }
-    
+
+        const { videoId, isExample } = attributes;
+
+        if(isExample){
             return (
-                <Fragment>
-                    <InspectorControls>
-                        <PanelBody title={lang.label}>
-                            <TextControl
-                                label={lang.label}
-                                value={videoId}
-                                onChange={(val) => setAttributes({ videoId: val })}
-                                placeholder={lang.placeholder}
-                            />
-                        </PanelBody>
-                    </InspectorControls>
-    
-                    <div {...blockProps}>
-                        {iframe ? (
-                            <div
-                                style={{
-                                    position: "relative",
-                                    padding: "30% 45%",
-                                }}
-                            >
-                                <iframe
-                                    src={iframe}
-                                    sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
-                                    allowFullScreen
-                                    style={{
-                                        pointerEvents: "none",
-                                        position: "absolute",
-                                        width: "100%",
-                                        height: "100%",
-                                        left: 0,
-                                        top: 0,
-                                        border: "none",
-		                                overflow: "hidden"
-                                    }}
-                                ></iframe>
-                            </div>
-                        ) : (
-                            <TextControl
-                                label={lang.label}
-                                value={videoId}
-                                onChange={(val) => setAttributes({ videoId: val })}
-                                placeholder={lang.placeholder}
-                                help={videoId ? lang.error : ""}
-                            />
-                        )}
-                    </div>
-                </Fragment>
+                <img
+                    src="https://docs.fuukei.org/short-code/bvcode.png"
+                    alt="预览"
+                    style={{ width: "100%", height: "auto", display: "block" }}
+                />
             );
+        }
+
+        const blockProps = useBlockProps();
+
+        let iframe = null;
+        const trimmed = (videoId || "").trim();
+
+        if (/^av\d+$/i.test(trimmed)) {
+            const avid = trimmed.replace(/^av/i, "");
+            iframe = `https://player.bilibili.com/player.html?avid=${avid}&page=1&autoplay=0&danmaku=0`;
+        } else if (/^BV[a-zA-Z0-9]+$/.test(trimmed)) {
+            const bvid = trimmed;
+            iframe = `https://player.bilibili.com/player.html?bvid=${bvid}&page=1&autoplay=0&danmaku=0`;
+        }
+
+        return (
+            <Fragment>
+                <InspectorControls>
+                    <PanelBody title={lang.label}>
+                        <TextControl
+                            label={lang.label}
+                            value={videoId}
+                            onChange={(val) => setAttributes({ videoId: val })}
+                            placeholder={lang.placeholder}
+                        />
+                    </PanelBody>
+                </InspectorControls>
+
+                <div {...blockProps}>
+                    {iframe ? (
+                        <div
+                            style={{
+                                position: "relative",
+                                padding: "30% 45%",
+                            }}
+                        >
+                            <iframe
+                                src={iframe}
+                                sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
+                                allowFullScreen
+                                style={{
+                                    pointerEvents: "none",
+                                    position: "absolute",
+                                    width: "100%",
+                                    height: "100%",
+                                    left: 0,
+                                    top: 0,
+                                    border: "none",
+                                    overflow: "hidden"
+                                }}
+                            ></iframe>
+                        </div>
+                    ) : (
+                        <TextControl
+                            label={lang.label}
+                            value={videoId}
+                            onChange={(val) => setAttributes({ videoId: val })}
+                            placeholder={lang.placeholder}
+                            help={videoId ? lang.error : ""}
+                        />
+                    )}
+                </div>
+            </Fragment>
+        );
     }
     registerBlockType("sakurairo/vbilibili", {
         title: lang.blockTitle,
@@ -120,6 +132,10 @@ export default function bilibiliBlock(){
             videoId: {
                 type: "string",
             },
+            isExample: {
+                type: "boolean",
+                default: false,
+            }
         },
         edit,
         save({ attributes }) {
@@ -155,5 +171,11 @@ export default function bilibiliBlock(){
 				</div>
 			);
 		},
+        example: {
+            attributes: {
+                videoId: "",
+                isExample: true,
+            },
+        },
     });
 }

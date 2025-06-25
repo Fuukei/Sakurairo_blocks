@@ -46,7 +46,18 @@ switch ((iroBlockEditor.language || window.navigator.language || "zh-CN").replac
 export default function conversationBlock() {
 
     function edit({ attributes, setAttributes }) {
-        const { avatar, direction, content } = attributes;
+        const { avatar, direction, content, isExample } = attributes;
+
+        if(isExample){
+            return (
+                <img
+                    src="https://docs.fuukei.org/short-code/dis.png"
+                    alt="预览"
+                    style={{ width: "100%", height: "auto", display: "block" }}
+                />
+            );
+        }
+
         const blockProps = useBlockProps();
         // 切换方向
         const toggleDirection = () => {
@@ -132,6 +143,10 @@ export default function conversationBlock() {
                 source: "html",
                 selector: ".conversations-code-text",
             },
+            isExample: {
+                type: "boolean",
+                default: false,
+            }
         },
         edit,
         save({ attributes }) {
@@ -148,6 +163,11 @@ export default function conversationBlock() {
                     />
                 </div>
             );
+        },
+        example: {
+            attributes: {
+                isExample: true,
+            },
         },
     });
 }
