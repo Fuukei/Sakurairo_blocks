@@ -1,8 +1,9 @@
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import {useBlockProps,BlockControls,PlainText,} from '@wordpress/block-editor';
-import {ToolbarGroup,ToolbarDropdownMenu,} from '@wordpress/components';
+import {ToolbarGroup,ToolbarDropdownMenu,DropdownMenu,Dropdown,ToolbarButton,MenuGroup,MenuItem} from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
+import { chevronDown } from '@wordpress/icons';
 
 let lang = {}
 
@@ -72,6 +73,7 @@ const languages = [
     { label: 'INI', value: 'ini' },
     { label: 'SQL', value: 'sql' },
     { label: 'XML', value: 'xml' },
+	{ label: 'bash', value: 'bash' },
 	{ label: 'Markdown', value: 'markdown' },
 ];
 
@@ -80,18 +82,39 @@ export default function hljsSupport() {
 		const { content, language } = attributes;
 		const blockProps = useBlockProps();
 
+		const currentLanguage = languages.find(l => l.value === language);
+		const labelText = currentLanguage ? currentLanguage.label : lang.hljsAuto;
+
 		return (
 			<Fragment>
 				<BlockControls>
 					<ToolbarGroup>
-						<ToolbarDropdownMenu
-							label={lang.hljsTitle}
-							controls={languages.map(({ value, label }) => ({
-								title: label,
-								icon: false,
-								onClick: () => setAttributes({ language: value }),
-								isActive: language === value,
-							}))}
+						<Dropdown
+							popoverProps={{ placement: 'bottom-start' }}
+							renderToggle={({ isOpen, onToggle }) => (
+								<ToolbarButton
+									icon={chevronDown}
+									label={lang.hljsTitle}
+									onClick={onToggle}
+									aria-expanded={isOpen}
+								>
+									{labelText}
+								</ToolbarButton>
+							)}
+							renderContent={() => (
+								<MenuGroup label={lang.hljsLabel}>
+									{languages.map(({ value, label }) => (
+										<MenuItem
+											key={value}
+											icon={language === value ? 'yes' : null}
+											isSelected={language === value}
+											onClick={() => setAttributes({ language: value })}
+										>
+											{label}
+										</MenuItem>
+									))}
+								</MenuGroup>
+							)}
 						/>
 					</ToolbarGroup>
 				</BlockControls>
