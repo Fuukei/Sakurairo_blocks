@@ -53,8 +53,11 @@ const languages = [
     { label: 'TypeScript', value: 'typescript' },
 	{ label: 'PHP', value: 'php' },
 	{ label: 'SCSS', value: 'scss' },
+	{ label: 'LESS', value: 'less' },
+	{ label: 'Stylus', value: 'stylus' },
     { label: 'Vue', value: 'vue' },
-    { label: 'React', value: 'jsx' },
+    { label: 'React+js', value: 'jsx' },
+	{ label: 'React+ts', value: 'tsx' },
     { label: 'Python', value: 'python' },
     { label: 'Java', value: 'java' },
 	{ label: 'JSON', value: 'json' },
@@ -68,13 +71,19 @@ const languages = [
     { label: 'Kotlin', value: 'kotlin' },
     { label: 'Ruby', value: 'ruby' },
     { label: 'Rust', value: 'rust' },
+	{ label: 'JSP', value: 'jsp' },
+	{ label: 'ASP', value: 'asp' },
 	{ label: 'YAML', value: 'yaml' },
     { label: 'TOML', value: 'toml' },
     { label: 'INI', value: 'ini' },
     { label: 'SQL', value: 'sql' },
     { label: 'XML', value: 'xml' },
 	{ label: 'bash', value: 'bash' },
+	{ label: 'CMD', value: 'cmd' },
+	{ label: 'PowerShell', value: 'powershell' },
+	{ label: 'VBScript', value: 'vbscript' },
 	{ label: 'Markdown', value: 'markdown' },
+	{ label: 'Plain Text', value: 'plaintext' }
 ];
 
 export default function hljsSupport() {
@@ -82,45 +91,29 @@ export default function hljsSupport() {
 		const { content, language } = attributes;
 		const blockProps = useBlockProps();
 
-		const currentLanguage = languages.find(l => l.value === language);
-		const labelText = currentLanguage ? currentLanguage.label : lang.hljsAuto;
+		let currentLang = language || '';
+		let selectedItem = languages.find(l => l.value === currentLang) || languages[0];
+		let labelText = selectedItem.label;
 
 		return (
 			<Fragment>
 				<BlockControls>
 					<ToolbarGroup>
-						<Dropdown
-							popoverProps={{ placement: 'bottom-start' }}
-							renderToggle={({ isOpen, onToggle }) => (
-								<ToolbarButton
-									icon={chevronDown}
-									label={lang.hljsTitle}
-									onClick={onToggle}
-									aria-expanded={isOpen}
-								>
-									{labelText}
-								</ToolbarButton>
-							)}
-							renderContent={() => (
-								<MenuGroup label={lang.hljsLabel}>
-									{languages.map(({ value, label }) => (
-										<MenuItem
-											key={value}
-											icon={language === value ? 'yes' : null}
-											isSelected={language === value}
-											onClick={() => setAttributes({ language: value })}
-										>
-											{label}
-										</MenuItem>
-									))}
-								</MenuGroup>
-							)}
+						<DropdownMenu
+							icon={chevronDown}
+							label={lang.hljsTitle}
+							text={labelText}
+							controls={languages.map(({ value, label }) => ({
+								title: label,
+								isActive: currentLang === value,
+								onClick: () => setAttributes({ language: value }),
+							}))}
 						/>
 					</ToolbarGroup>
 				</BlockControls>
 
 				<pre {...blockProps}>
-					<code className={language ? `language-${language}` : ''}>
+					<code className={currentLang ? `language-${currentLang}` : ''}>
 						<PlainText
 							value={content}
 							onChange={(newContent) => setAttributes({ content: newContent })}
