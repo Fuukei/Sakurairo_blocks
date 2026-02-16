@@ -50,22 +50,22 @@ let lang = createI18n({
 const TYPES = {
     task: {
         label: lang.taskLabel,
-        icon: '<i class="fa-solid fa-clipboard-list"></i>',
+        icon: "fa-solid fa-clipboard-list",
         className: "task",
     },
     warning: {
         label: lang.warningLabel,
-        icon: '<i class="fa-solid fa-triangle-exclamation"></i>',
+        icon: "fa-solid fa-triangle-exclamation",
         className: "warning",
     },
     noway: {
         label: lang.nowayLabel,
-        icon: '<i class="fa-solid fa-square-xmark"></i>',
+        icon: "fa-solid fa-square-xmark",
         className: "noway",
     },
     buy: {
         label: lang.buyLabel,
-        icon: '<i class="fa-solid fa-square-check"></i>',
+        icon: "fa-solid fa-square-check",
         className: "buy",
     },
 };
@@ -93,8 +93,11 @@ function edit({ attributes, setAttributes }) {
         ];
     }
 
-    const blockProps = useBlockProps();
     const typeInfo = TYPES[type];
+
+    const blockProps = useBlockProps({
+        className: `shortcodestyle ${typeInfo.className}`,
+    });
 
     return (
         <Fragment>
@@ -115,11 +118,10 @@ function edit({ attributes, setAttributes }) {
                 </ToolbarGroup>
             </BlockControls>
 
-            <div
-                {...blockProps}
-                className={`shortcodestyle ${typeInfo.className}`}
-            >
-                <RawHTML>{typeInfo.icon}</RawHTML>
+            <div {...blockProps}>
+                <span contentEditable={false}>
+                    <i className={typeInfo.icon} />
+                </span>
                 <RichText
                     tagName="span"
                     value={content}
@@ -134,7 +136,7 @@ function edit({ attributes, setAttributes }) {
 }
 
 export default function noticeBlock() {
-    registerBlockType("sakurairo/notice-block", {
+    registerBlockType("sakurairo/notice", {
         apiVersion: 2,
         title: lang.blockTitle,
         description: "",
@@ -143,8 +145,6 @@ export default function noticeBlock() {
         attributes: {
             content: {
                 type: "string",
-                source: "html",
-                selector: "span",
             },
             type: {
                 type: "string",
@@ -156,15 +156,8 @@ export default function noticeBlock() {
             },
         },
         edit,
-        save({ attributes }) {
-            const { content, type } = attributes;
-            const { icon, className } = TYPES[type];
-            return (
-                <div className={`shortcodestyle ${className}`}>
-                    <RawHTML>{icon}</RawHTML>
-                    <RichText.Content tagName="span" value={content} />
-                </div>
-            );
+        save() {
+            return null
         },
         example: {
             attributes: {

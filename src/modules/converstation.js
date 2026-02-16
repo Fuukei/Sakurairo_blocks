@@ -55,7 +55,13 @@ export default function conversationBlock() {
             );
         }
 
-        const blockProps = useBlockProps();
+        const blockProps = useBlockProps({
+            className: "conversations-code",
+            style: {
+                display: "flex",
+                flexDirection: direction,
+            },
+        });
         // 切换方向
         const toggleDirection = () => {
             setAttributes({
@@ -96,7 +102,6 @@ export default function conversationBlock() {
                 </BlockControls>
                 <div
                     {...blockProps}
-                    className="conversations-code"
                     style={{ display: "flex", flexDirection: direction }}
                 >
                     {avatar ? (
@@ -120,7 +125,7 @@ export default function conversationBlock() {
         );
     }
 
-    registerBlockType("sakurairo/conversations-block", {
+    registerBlockType("sakurairo/conversation", {
         apiVersion: 2,
         title: lang.blockTitle,
         icon: createElement("i", { className: "fa-regular fa-comments" }),
@@ -136,8 +141,6 @@ export default function conversationBlock() {
             },
             content: {
                 type: "string",
-                source: "html",
-                selector: ".conversations-code-text",
             },
             isExample: {
                 type: "boolean",
@@ -145,20 +148,8 @@ export default function conversationBlock() {
             },
         },
         edit,
-        save({ attributes }) {
-            const { avatar, direction, content } = attributes;
-            return (
-                <div
-                    className="conversations-code"
-                    style={{ display: "flex", flexDirection: direction }}
-                >
-                    {avatar && <img src={avatar} alt="" />}
-                    <div
-                        className="conversations-code-text"
-                        dangerouslySetInnerHTML={{ __html: content }}
-                    />
-                </div>
-            );
+        save() {
+            return null
         },
         example: {
             attributes: {
